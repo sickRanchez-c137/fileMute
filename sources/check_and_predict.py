@@ -1,6 +1,6 @@
 from supported_file_info import *
 
-DEBUG = True
+DEBUG = False
 
 def check_bytes(first_seq,second_seq_list):
     ret_val = (False,second_seq_list[0])
