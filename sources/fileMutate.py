@@ -9,17 +9,7 @@ import sys
 from ext_crypt import *
 from ext_decrypt import *
 
-try:
-    import tkinter as tk
-    from tkinter import filedialog
-except ImportError:
-    import Tkinter as tk
-    from Tkinter import filedialog
-except:
-    print(f"E: Import Error: Module \"tkinter\" not found")
-    sys.exit(-1)
-
-if __name__=="__main__":
+def main():
     # name some variables
     file_name = ""
     dest_file_type = ""
@@ -30,32 +20,59 @@ if __name__=="__main__":
 
     # read command line arguments
     if len(sys.argv)>1:
-        if sys.argv[1]=='-r' or sys.argv[1]=='-R':
-            # might be something, currenly we only see for revert -r
-            
-            if len(sys.argv)>2:
-                file_name = sys.argv[2]
-            else:
-                my_app = tk.Tk()
-                my_app.withdraw()
-                file_name = filedialog.askopenfilename(title="Select File To Revert")
-            mute = False
-        else:
-            file_name = sys.argv[1]
-            # check for file availability, exit if not available
-            if not os.path.isfile(file_name):
-                print(f"E: file {file_name} not found")
+        long_argv = " ".join(sys.argv[1:])
+        if DEBUG:
+            print(f"I: .. the long argument is \"{long_argv}\"")
+
+        list_of_dashes = [pos for pos, char in enumerate(long_argv) if char == '-']
+
+        if DEBUG:
+            print(f"I: .. \'-\' found at positions {list_of_dashes}")
+
+        for each_option in list_of_dashes:
+            letter_option = ''
+            option_value = ""
+            try:
+                letter_option = long_argv[each_option+1]
+                to_search = long_argv[each_option+3:]
+                option_value = get_option_val(to_search)
+            except:
+                print(f"E: .. Illegal Use of \'-\'")
                 sys.exit(-1)
 
-    # read if the user wants to specify the destination extension of file
-    elif len(sys.argv)>2:
-        dest_file_type = sys.argv[2]
+            if letter_option == 'r' or  letter_option == 'R':
+                # this is revert section
+                file_name = option_value
+                if not os.path.isfile(file_name):
+                    print(f"E: .. file {file_name} not found")
+                    file_name = get_gui_filename("Select File to Revert")
+                mute = False
+
+            elif letter_option == 'h' or  letter_option == 'H':
+                print_help_message()
+                return
+
+            elif letter_option == 'm' or  letter_option == 'M':
+                file_name = option_value
+                if not os.path.isfile(file_name):
+                    print(f"E: .. file {file_name} not found")
+                    file_name = get_gui_filename("Select File to Mute")
+                mute = True
+
+            elif letter_option == 'd' or  letter_option == 'D':
+                dest_file_type = option_value
+                if file_name=="":
+                    file_name = get_gui_filename("Select File to Mute")
+                    mute = True
+
+            else:
+                print(f"E: Illegal options specified")
+                print_help_message()
+                return
 
     # if no argument provided, pop-up a dialog box
     elif len(sys.argv)==1:
-        my_app = tk.Tk()
-        my_app.withdraw()
-        file_name = filedialog.askopenfilename(title="Select File To Mute")
+        file_name = get_gui_filename("Select File to Mute")
 
     if mute:
         ext_crypt = EXT_CRYPT(file_name,dest_file_type.lower())
@@ -66,3 +83,6 @@ if __name__=="__main__":
 
     if DEBUG:
         print(f"I: Writing output file {output_file_name} finished")
+
+if __name__=="__main__":
+    main()
