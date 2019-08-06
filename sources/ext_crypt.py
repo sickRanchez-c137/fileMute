@@ -4,25 +4,13 @@ import io
 import sys
 import random
 
-try:
-    import tkinter as tk
-    from tkinter import *
-    from tkinter import messagebox
-except ImportError:
-    import Tkinter as tk
-    from Tkinter import *
-    from Tkinter import messagebox
-except:
-    print(f"E: Import Error: Module \"tkinter\" not found")
-    sys.exit(-1)
-
 from check_and_predict import *
 
 class EXT_CRYPT:
     def __init__(self,file_name="",dest_file_type=""):
 
         if file_name=="":
-            print(f"E: Should never reach here, yet here you are ...")
+            print(f"E: File name not specified ...")
             sys.exit(-1)
 
         self.input_file = file_name
