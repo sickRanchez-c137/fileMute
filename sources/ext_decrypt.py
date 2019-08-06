@@ -3,18 +3,6 @@ import io
 import sys
 import random
 
-try:
-    import tkinter as tk
-    from tkinter import *
-    from tkinter import messagebox
-except ImportError:
-    import Tkinter as tk
-    from Tkinter import *
-    from Tkinter import messagebox
-except:
-    print(f"E: Import Error: Module \"tkinter\" not found")
-    sys.exit(-1)
-
 from check_and_predict import *
 
 class EXT_DECRYPT:
